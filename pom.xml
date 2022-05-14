@@ -92,6 +92,7 @@
         <properties-maven-plugin.version>1.1.0</properties-maven-plugin.version>
         <sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
         <!-- jhipster-needle-maven-property -->
+        <spoon-core.version>10.1.1</spoon-core.version>
     </properties>
 
     <dependencyManagement>
@@ -312,6 +313,12 @@
             <scope>provided</scope>
         </dependency>
         <!-- jhipster-needle-maven-add-dependency -->
+
+        <dependency>
+            <groupId>fr.inria.gforge.spoon</groupId>
+            <artifactId>spoon-core</artifactId>
+            <version>${spoon-core.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
