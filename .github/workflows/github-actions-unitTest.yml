@@ -27,6 +27,8 @@ jobs:
       checks: write
       pull-requests: write
     steps:
+      - uses: actions/checkout@v3
+
       - name: Run JUnit with Maven
         run: mvn test --batch-mode --fail-at-end
 
