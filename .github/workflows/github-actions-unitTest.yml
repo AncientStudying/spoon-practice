@@ -47,7 +47,6 @@ jobs:
         uses: im-open/process-jest-test-results@v2.0.5
         if: always()
         with:
-          check_name: "Jest Test Results"
           github-token: ${{ secrets.GITHUB_TOKEN }}
           results-file: "target/test-results/jest-results.json"
           report-name: "Jest Test Results"
