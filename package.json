@@ -43,7 +43,7 @@
     "java:war": "./mvnw -ntp verify -DskipTests --batch-mode -Pwar",
     "java:war:dev": "npm run java:war -- -Pdev,webapp",
     "java:war:prod": "npm run java:war -- -Pprod",
-    "jest": "jest --coverage --logHeapUsage --maxWorkers=2 --config jest.conf.js",
+    "jest": "jest --coverage --logHeapUsage --maxWorkers=2 --config jest.conf.js --json --outputFile=target/test-results/jest-results.json",
     "jest:update": "npm run jest -- --updateSnapshot",
     "lint": "eslint . --ext .js,.ts,.jsx,.tsx",
     "lint:fix": "npm run lint -- --fix",

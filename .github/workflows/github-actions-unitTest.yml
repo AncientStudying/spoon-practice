@@ -8,20 +8,25 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'adopt'
+
       - name: Set up Node@16
         uses: actions/setup-node@v3
         with:
           node-version: 16
           cache: 'npm'
+
       - name: Run JUnit with Maven
         run: mvn test --batch-mode --fail-at-end
+
       - name: Run Jest with NPM
         run: npm test
+
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1.35
         if: always()
@@ -29,3 +34,10 @@ jobs:
           check_name: "JUnit Test Results"
           comment_title: "JUnit Test Results"
           files: "**/target/surefire-reports/*.xml"
+
+      - name: Process Jest results with default
+        if: always()
+        uses: im-open/process-jest-test-results@v2.0.5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          results-file: "target/test-results/jest-results.json"
