@@ -1,4 +1,4 @@
-package com.mycompany.myapp;
+package practice.spoon.analysis;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -15,21 +15,21 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class LoggerFinderTest extends AbstractProcessor<CtField<Logger>> {
+public class LoggerFinderTest extends AbstractProcessor<CtField<?>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoggerFinderTest.class);
 
-    public final List<CtField<Logger>> loggers = new ArrayList<>();
+    public final List<CtField<?>> loggers = new ArrayList<>();
 
     @Override
-    public boolean isToBeProcessed(CtField<Logger> ctField) {
-        return (ctField.getAssignment() != null)
-            && (ctField.getAssignment().getType().isClass())
-            && (ctField.getSimpleName().equals(Logger.class.getSimpleName()));
+    public boolean isToBeProcessed(CtField<?> ctField) {
+        LOGGER.debug(ctField.getReference().getType().getQualifiedName());
+        return ctField.getReference().getType().getQualifiedName().equals(Logger.class.getCanonicalName());
+
     }
 
     @Override
-    public void process(CtField<Logger> loggerCtField) {
+    public void process(CtField<?> loggerCtField) {
         loggers.add(loggerCtField);
     }
 
@@ -50,14 +50,7 @@ public class LoggerFinderTest extends AbstractProcessor<CtField<Logger>> {
         processingManager.addProcessor(processor);
         processingManager.process(factory.Class().getAll());
 
-        processor.loggers.forEach(loggerCtField -> {
-            assertEquals("Not a logger","Logger",loggerCtField.getSimpleName());
-            LOGGER.info("loggerCtField {}", loggerCtField);
-            LOGGER.info("loggerCtField.getAssignment() {}", loggerCtField.getAssignment());
-            LOGGER.info("loggerCtField.getReference() {}", loggerCtField.getReference());
-            LOGGER.info("loggerCtField.getPath() {}", loggerCtField.getPath());
-        });
-
+        processor.loggers.forEach(loggerCtField -> assertEquals("Not a logger", Logger.class.getCanonicalName(), loggerCtField.getReference().getType().getQualifiedName()));
 
     }
 
