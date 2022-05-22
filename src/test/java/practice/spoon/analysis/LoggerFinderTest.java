@@ -4,53 +4,39 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spoon.Launcher;
-import spoon.processing.AbstractProcessor;
 import spoon.processing.ProcessingManager;
-import spoon.reflect.declaration.CtField;
 import spoon.reflect.factory.Factory;
 import spoon.support.QueueProcessingManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-public class LoggerFinderTest extends AbstractProcessor<CtField<?>> {
+public class LoggerFinderTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoggerFinderTest.class);
 
-    public final List<CtField<?>> loggers = new ArrayList<>();
-
-    @Override
-    public boolean isToBeProcessed(CtField<?> ctField) {
-        LOGGER.debug(ctField.getReference().getType().getQualifiedName());
-        return ctField.getReference().getType().getQualifiedName().equals(Logger.class.getCanonicalName());
-
-    }
-
-    @Override
-    public void process(CtField<?> loggerCtField) {
-        loggers.add(loggerCtField);
-    }
-
     @Test
     public void testLoggerFinder() {
-        final String[] args = {
+        String[] args = {
             "-i", "src/main/java/",
             "-o", "target/spooned/"
         };
 
-        final Launcher launcher = new Launcher();
+        Launcher launcher = new Launcher();
         launcher.setArgs(args);
         launcher.run();
 
-        final Factory factory = launcher.getFactory();
-        final ProcessingManager processingManager = new QueueProcessingManager(factory);
-        final LoggerFinderTest processor = new LoggerFinderTest();
-        processingManager.addProcessor(processor);
+        Factory factory = launcher.getFactory();
+        ProcessingManager processingManager = new QueueProcessingManager(factory);
+        LoggerProcessor loggerProcessor = new LoggerProcessor();
+        processingManager.addProcessor(loggerProcessor);
         processingManager.process(factory.Class().getAll());
 
-        processor.loggers.forEach(loggerCtField -> assertEquals("Not a logger", Logger.class.getCanonicalName(), loggerCtField.getReference().getType().getQualifiedName()));
+        LOGGER.trace("Logger List Size:{}", loggerProcessor.loggers.size());
+
+        assertTrue("Loggers NOT Found", loggerProcessor.loggers.size() > 0);
+
+        loggerProcessor.loggers.forEach(loggerCtField -> assertEquals("Not a logger", Logger.class.getCanonicalName(), loggerCtField.getReference().getType().getQualifiedName()));
 
     }
 
