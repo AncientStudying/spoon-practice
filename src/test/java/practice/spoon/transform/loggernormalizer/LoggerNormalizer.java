@@ -7,6 +7,9 @@ import spoon.Launcher;
 import spoon.SpoonAPI;
 import spoon.compiler.Environment;
 import spoon.processing.ProcessingManager;
+import spoon.refactoring.CtRenameGenericVariableRefactoring;
+import spoon.refactoring.CtRenameLocalVariableRefactoring;
+import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.factory.Factory;
 import spoon.support.QueueProcessingManager;
@@ -81,7 +84,10 @@ public class LoggerNormalizer {
             LOGGER.debug("processing logger with simpleName: {}", logger.getSimpleName());
             if(!logger.getSimpleName().equals(DESIRED_NAME)) {
                 LOGGER.debug("modifying simpleName");
-                logger.setSimpleName(DESIRED_NAME);
+                CtRenameGenericVariableRefactoring refactor = new CtRenameGenericVariableRefactoring();
+                refactor.setTarget(logger);
+                refactor.setNewName(DESIRED_NAME);
+                refactor.refactor();
             }
 
             LOGGER.debug("iterating over found modifiers");
