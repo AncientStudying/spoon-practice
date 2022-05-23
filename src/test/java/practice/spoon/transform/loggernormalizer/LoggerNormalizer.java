@@ -36,16 +36,24 @@ public class LoggerNormalizer {
 
     private LoggerNormalizer() {
         spooniverse = new Launcher();
+        // todo troubleshoot SniperJavaPrettyPrinter
+//        Environment env = spooniverse.getEnvironment();
+//        env.setPrettyPrinterCreator(() -> new SniperJavaPrettyPrinter(spooniverse.getEnvironment()));
         Environment env = spooniverse.getEnvironment();
-        env.setPrettyPrinterCreator(() -> new SniperJavaPrettyPrinter(spooniverse.getEnvironment()));
+        env.setAutoImports(true);
+        env.setCommentEnabled(true);
 
         loggerProcessor = new LoggerProcessor();
     }
 
     private LoggerNormalizer(String mvnPath) {
         spooniverse = new MavenLauncher(mvnPath, MavenLauncher.SOURCE_TYPE.APP_SOURCE);
+        // todo troubleshoot SniperJavaPrettyPrinter
+//        Environment env = spooniverse.getEnvironment();
+//        env.setPrettyPrinterCreator(() -> new SniperJavaPrettyPrinter(spooniverse.getEnvironment()));
         Environment env = spooniverse.getEnvironment();
-        env.setPrettyPrinterCreator(() -> new SniperJavaPrettyPrinter(spooniverse.getEnvironment()));
+        env.setAutoImports(true);
+        env.setCommentEnabled(true);
 
         loggerProcessor = new LoggerProcessor();
     }
