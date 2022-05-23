@@ -15,7 +15,7 @@ public class LoggerNormalizerRunner {
             .readClasses()
             .findLoggers()
             .refactorLoggers()
-            .writeTransformedClasses("target/loggernormalizer/");
+            .writeTransformedClasses("target/logger-normalizer/");
 
     }
 }

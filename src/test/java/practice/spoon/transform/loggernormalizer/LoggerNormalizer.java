@@ -4,19 +4,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import practice.spoon.analysis.LoggerProcessor;
 import spoon.Launcher;
+import spoon.MavenLauncher;
 import spoon.SpoonAPI;
 import spoon.compiler.Environment;
 import spoon.processing.ProcessingManager;
 import spoon.refactoring.CtRenameGenericVariableRefactoring;
-import spoon.refactoring.CtRenameLocalVariableRefactoring;
-import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.factory.Factory;
 import spoon.support.QueueProcessingManager;
 import spoon.support.gui.SpoonModelTree;
+import spoon.support.sniper.SniperJavaPrettyPrinter;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+/**
+ * This class based off of the Spoonerism Presentation.
+ * @see <a href="https://github.com/SpoonLabs/spoon-examples/blob/master/docs/spoonerism.fodp">Spoonerism</a>
+ * @see <a href="https://github.com/alshopov/spoonerism">GitHub -> alshopov -> spoonerism</a>
+ * @see <a href="https://github.com/alshopov/spoonerism/blob/master/doc/700TonsOfCodeLater.odp">700 Tons of Code Later</a>
+ */
 
 public class LoggerNormalizer {
 
@@ -29,6 +36,25 @@ public class LoggerNormalizer {
 
     private LoggerNormalizer() {
         spooniverse = new Launcher();
+        // todo troubleshoot SniperJavaPrettyPrinter
+//        Environment env = spooniverse.getEnvironment();
+//        env.setPrettyPrinterCreator(() -> new SniperJavaPrettyPrinter(spooniverse.getEnvironment()));
+        Environment env = spooniverse.getEnvironment();
+        env.setAutoImports(true);
+        env.setCommentEnabled(true);
+
+        loggerProcessor = new LoggerProcessor();
+    }
+
+    private LoggerNormalizer(String mvnPath) {
+        spooniverse = new MavenLauncher(mvnPath, MavenLauncher.SOURCE_TYPE.APP_SOURCE);
+        // todo troubleshoot SniperJavaPrettyPrinter
+//        Environment env = spooniverse.getEnvironment();
+//        env.setPrettyPrinterCreator(() -> new SniperJavaPrettyPrinter(spooniverse.getEnvironment()));
+        Environment env = spooniverse.getEnvironment();
+        env.setAutoImports(true);
+        env.setCommentEnabled(true);
+
         loggerProcessor = new LoggerProcessor();
     }
 
@@ -38,6 +64,10 @@ public class LoggerNormalizer {
      */
     public static LoggerNormalizer factory() {
         return new LoggerNormalizer();
+    }
+
+    public static LoggerNormalizer factory(String mvnPath) {
+        return new LoggerNormalizer(mvnPath);
     }
 
     public LoggerProcessor getLoggerProcessor() {
@@ -100,10 +130,6 @@ public class LoggerNormalizer {
     }
 
     public LoggerNormalizer writeTransformedClasses(String outputTarget) {
-        Environment env = spooniverse.getEnvironment();
-        env.setAutoImports(true);
-        env.setCommentEnabled(true);
-
         spooniverse.setSourceOutputDirectory(outputTarget);
         spooniverse.prettyprint();
         return this;
